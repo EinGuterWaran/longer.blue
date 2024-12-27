@@ -122,6 +122,19 @@
         }),
       })
 
+      // If we get a 401 error, try to refresh the session
+      if (response.status === 401) {
+        // Force re-login
+        isLoggedIn = false
+        jwt = ''
+        userDid = ''
+        localStorage.removeItem('jwt')
+        localStorage.removeItem('userDid')
+        showLoginModal = true
+        pendingPost = content
+        throw new Error('Session expired. Please login again.')
+      }
+
       if (!response.ok) {
         const responseText = await response.text()
         throw new Error(`Failed to create post: ${responseText}`)
@@ -142,17 +155,34 @@
       // Create shorter preview text (first 100 characters)
       const previewText = content.slice(0, 100) + '...'
       const postUrl = `https://longer.blue/posts/${result.post.shortUrl}`
-      
+      const postText = `${previewText}\n\nRead more: ${postUrl}`
+
+      // Calculate byte positions for the URL
+      const urlStart = postText.indexOf(postUrl)
+      const urlEnd = urlStart + postUrl.length
+
       await agent.post({
-        text: `${previewText}\n\nRead more: ${postUrl}`,
-        langs: ['en']
+        text: postText,
+        langs: ['en'],
+        facets: [{
+          index: {
+            byteStart: urlStart,
+            byteEnd: urlEnd
+          },
+          features: [{
+            $type: 'app.bsky.richtext.facet#link',
+            uri: postUrl
+          }]
+        }]
       })
 
       content = ''
       window.location.href = `/posts/${result.post.shortUrl}?posted=true`
     } catch (error) {
       console.error('Detailed error:', error)
-      alert('Failed to create post. Please try again.')
+      if (!error.message.includes('Session expired')) {
+        alert('Failed to create post. Please try again.')
+      }
     } finally {
       isSubmitting = false
     }
