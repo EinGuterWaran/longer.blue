@@ -1,5 +1,6 @@
 <script>
   import { onMount } from 'svelte'
+  import { BskyAgent } from '@atproto/api'
   
   let content = $state('')
   let isSubmitting = $state(false)
@@ -108,9 +109,7 @@
     
     isSubmitting = true
     try {
-      console.log('Sending post request with JWT:', jwt)
-      console.log('Current userDid:', userDid)
-      
+      // Create post in database
       const response = await fetch('/api/posts', {
         method: 'POST',
         headers: {
@@ -123,17 +122,34 @@
         }),
       })
 
-      console.log('Response status:', response.status)
-      const responseText = await response.text()
-      console.log('Response body:', responseText)
-
       if (!response.ok) {
+        const responseText = await response.text()
         throw new Error(`Failed to create post: ${responseText}`)
       }
 
-      const result = JSON.parse(responseText)
+      const result = await response.json()
+      
+      // Post to Bluesky
+      const agent = new BskyAgent({
+        service: 'https://bsky.social'
+      })
+      
+      await agent.resumeSession({
+        did: userDid,
+        accessJwt: jwt
+      })
+
+      // Create shorter preview text (first 100 characters)
+      const previewText = content.slice(0, 100) + '...'
+      const postUrl = `https://longer.blue/posts/${result.post.shortUrl}`
+      
+      await agent.post({
+        text: `${previewText}\n\nRead more: ${postUrl}`,
+        langs: ['en']
+      })
+
       content = ''
-      window.location.reload()
+      window.location.href = `/posts/${result.post.shortUrl}?posted=true`
     } catch (error) {
       console.error('Detailed error:', error)
       alert('Failed to create post. Please try again.')
