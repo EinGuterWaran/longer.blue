@@ -228,6 +228,10 @@
     longer.blue
   </h1>
 
+  <p class="text-center text-gray-600 dark:text-gray-400 max-w-xl mb-8 px-4">
+    Create longer posts on Bluesky that automatically generate a preview with a link to your full content.
+  </p>
+
   <div class="w-full max-w-2xl mb-8 px-4">
     <div class="relative group">
       <textarea
@@ -257,6 +261,44 @@
       {/if}
     </button>
   </div>
+
+  <!-- Footer -->
+  <footer class="w-full max-w-2xl px-4 pb-8">
+    <div class="mt-12 p-6 rounded-xl bg-gradient-to-r from-blue-500/10 to-blue-600/10 border border-blue-200/20 backdrop-blur-sm">
+      <div class="flex flex-col items-center gap-6">
+        <div class="flex items-center gap-2">
+          <span class="bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent font-medium">
+            longer.blue
+          </span>
+        </div>
+        
+        <div class="flex flex-wrap justify-center gap-4">
+          <a 
+            href="https://bsky.app/profile/janu.lol" 
+            class="px-4 py-2 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 transition-all duration-200 text-sm flex items-center gap-2 border border-blue-200/20"
+            target="_blank" 
+            rel="noopener noreferrer"
+          >
+            <span>@janu.lol</span>
+            <span class="text-xs">on Bluesky</span>
+          </a>
+          <a 
+            href="https://x.com/janubuilds" 
+            class="px-4 py-2 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 transition-all duration-200 text-sm flex items-center gap-2 border border-blue-200/20"
+            target="_blank" 
+            rel="noopener noreferrer"
+          >
+            <span>@janubuilds</span>
+            <span class="text-xs">on X</span>
+          </a>
+        </div>
+
+        <p class="text-sm text-blue-600/60 dark:text-blue-400/60">
+          Built with 💙 by Janu
+        </p>
+      </div>
+    </div>
+  </footer>
 </main>
 
 <!-- Login Modal -->
