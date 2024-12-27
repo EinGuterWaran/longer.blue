@@ -1,10 +1,18 @@
 <script>
-  let { data } = $props()
-  let content = ''
-  let isSubmitting = false
+  let content = $state('')
+  let isSubmitting = $state(false)
+  let hasInteracted = $state(false)
+  let characterCount = $derived(content.length)
+  let isValidLength = $derived(characterCount >= 300)
+  let showValidation = $derived(hasInteracted && content.length > 0)
+
+  function handleInput(event) {
+    content = event.target.value
+    hasInteracted = true
+  }
 
   async function createPost() {
-    if (!content.trim()) return
+    if (!content.trim() || !isValidLength) return
     
     isSubmitting = true
     try {
@@ -39,19 +47,30 @@
   <div class="w-full max-w-2xl mb-8 px-4">
     <div class="relative group">
       <textarea
-        bind:value={content}
-        class="w-full h-48 p-4 text-gray-700 dark:text-gray-100 bg-white dark:bg-gray-800 border-2 border-blue-200 dark:border-blue-800 rounded-xl focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 transition-all shadow-sm hover:shadow-md"
-        placeholder="Write your longer post here..."
+        value={content}
+        on:input={handleInput}
+        class="w-full h-48 p-4 text-gray-700 dark:text-gray-100 bg-white dark:bg-gray-800 border-2 {showValidation ? (isValidLength ? 'border-blue-200 dark:border-blue-800' : 'border-red-200 dark:border-red-800') : 'border-gray-200 dark:border-gray-700'} rounded-xl focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 transition-all shadow-sm hover:shadow-md"
+        placeholder="Write your longer post here... (minimum 300 characters)"
       />
       <div class="absolute inset-0 rounded-xl bg-blue-500/5 pointer-events-none transition-opacity opacity-0 group-hover:opacity-100" />
     </div>
     
+    <div class="mt-2 text-sm {showValidation ? (isValidLength ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400') : 'text-gray-500 dark:text-gray-400'}">
+      {characterCount} characters {showValidation ? (isValidLength ? '✓' : `(at least ${300 - characterCount} more needed)`) : '(minimum 300)'}
+    </div>
+    
     <button
       on:click={createPost}
-      disabled={isSubmitting}
+      disabled={isSubmitting || !isValidLength}
       class="px-8 py-3 mt-4 text-white bg-blue-500 rounded-xl hover:bg-blue-600 disabled:bg-blue-300 transition-all duration-200 ease-in-out hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] font-medium"
     >
-      {isSubmitting ? 'Creating...' : 'Create Post'}
+      {#if isSubmitting}
+        Creating...
+      {:else if showValidation && !isValidLength}
+        Post Too Short
+      {:else}
+        Create Post
+      {/if}
     </button>
   </div>
 
