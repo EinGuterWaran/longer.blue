@@ -10,6 +10,12 @@
   let userHandle = $state('')
   let userAvatar = $state('')
   
+  function decodeHtmlEntities(text) {
+    const textarea = document.createElement('textarea')
+    textarea.innerHTML = text
+    return textarea.value
+  }
+  
   async function fetchUserProfile(handle) {
     try {
       const response = await fetch(`https://api.bsky.app/xrpc/app.bsky.actor.getProfile?actor=${handle}`)
@@ -56,6 +62,7 @@
   
   // Format date only if it exists
   let formattedDate = post.created_at ? new Date(post.created_at).toLocaleString() : 'Date unknown'
+  let decodedContent = post?.content ? decodeHtmlEntities(post.content) : 'No content available'
 </script>
 
 {#if justPosted}
@@ -126,7 +133,7 @@
       </div>
       
       <p class="text-gray-700 dark:text-gray-100 whitespace-pre-wrap mb-4 break-words">
-        {post?.content || 'No content available'}
+        {decodedContent}
       </p>
     </div>
   </div>
