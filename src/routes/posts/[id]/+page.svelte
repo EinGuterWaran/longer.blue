@@ -10,7 +10,10 @@
   let userHandle = $state('')
   let userAvatar = $state('')
   
+  let decodedContent = $state('')
+  
   function decodeHtmlEntities(text) {
+    if (typeof document === 'undefined') return text
     const textarea = document.createElement('textarea')
     textarea.innerHTML = text
     return textarea.value
@@ -29,6 +32,8 @@
   }
   
   onMount(() => {
+    decodedContent = post?.content ? decodeHtmlEntities(post.content) : 'No content available'
+    
     const searchParams = new URLSearchParams(window.location.search)
     justPosted = searchParams.get('posted') === 'true'
     
@@ -62,7 +67,6 @@
   
   // Format date only if it exists
   let formattedDate = post.created_at ? new Date(post.created_at).toLocaleString() : 'Date unknown'
-  let decodedContent = post?.content ? decodeHtmlEntities(post.content) : 'No content available'
 </script>
 
 {#if justPosted}
