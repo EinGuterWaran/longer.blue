@@ -1,6 +1,7 @@
 <script>
   import { onMount } from 'svelte'
-  
+  import Footer from '../../../components/Footer.svelte'
+
   let { data } = $props()
   let { post } = data
   
@@ -141,6 +142,7 @@
       </p>
     </div>
   </div>
+  <Footer />
 </main> 
 
 <style>
