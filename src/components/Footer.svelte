@@ -7,6 +7,23 @@
         </span>
       </div>
       
+      <div class="flex flex-col items-center gap-3 text-center">
+        <a href="https://boilerplatehub.com" 
+           class="text-sm text-blue-600/80 dark:text-blue-400/80 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+           target="_blank" 
+           rel="noopener noreferrer"
+        >
+          Need a SaaS starter kit? Check out BoilerplateHub →
+        </a>
+        <a href="https://feather-flow.com" 
+           class="text-sm text-blue-600/80 dark:text-blue-400/80 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+           target="_blank" 
+           rel="noopener noreferrer"
+        >
+          Get your MVP built in 21 days with FeatherFlow →
+        </a>
+      </div>
+      
       <div class="flex flex-wrap justify-center gap-4">
         <a 
           href="https://bsky.app/profile/longer.blue" 
