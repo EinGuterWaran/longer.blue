@@ -9,6 +9,15 @@
       
       <div class="flex flex-wrap justify-center gap-4">
         <a 
+          href="https://bsky.app/profile/longer.blue" 
+          class="px-4 py-2 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 transition-all duration-200 text-sm flex items-center gap-2 border border-blue-200/20"
+          target="_blank" 
+          rel="noopener noreferrer"
+        >
+          <span>@longer.blue</span>
+          <span class="text-xs">on Bluesky</span>
+        </a>
+        <a 
           href="https://bsky.app/profile/janu.lol" 
           class="px-4 py-2 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 transition-all duration-200 text-sm flex items-center gap-2 border border-blue-200/20"
           target="_blank" 
