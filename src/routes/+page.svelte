@@ -21,6 +21,10 @@
   let showLoginModal = $state(false)
   let pendingPost = $state(null)
 
+  // Add new state variables
+  let showConfirmDialog = $state(false)
+  let postResult = $state(null)
+
   async function fetchUserProfile(handle) {
     try {
       const response = await fetch(`https://api.bsky.app/xrpc/app.bsky.actor.getProfile?actor=${handle}`)
@@ -141,8 +145,21 @@
       }
 
       const result = await response.json()
+      postResult = result // Store the result
+      showConfirmDialog = true // Show confirmation dialog
       
-      // Post to Bluesky
+    } catch (error) {
+      console.error('Detailed error:', error)
+      if (!error.message.includes('Session expired')) {
+        alert('Failed to create post. Please try again.')
+      }
+    } finally {
+      isSubmitting = false
+    }
+  }
+
+  async function publishToBluesky() {
+    try {
       const agent = new BskyAgent({
         service: 'https://bsky.social'
       })
@@ -152,12 +169,10 @@
         accessJwt: jwt
       })
 
-      // Create shorter preview text (first 100 characters)
       const previewText = content.slice(0, 100) + '...'
-      const postUrl = `https://longer.blue/posts/${result.post.shortUrl}`
+      const postUrl = `https://longer.blue/posts/${postResult.post.shortUrl}`
       const postText = `${previewText}\n\nRead more: ${postUrl}`
 
-      // Calculate byte positions for the URL
       const urlStart = postText.indexOf(postUrl)
       const urlEnd = urlStart + postUrl.length
 
@@ -177,15 +192,19 @@
       })
 
       content = ''
-      window.location.href = `/posts/${result.post.shortUrl}?posted=true`
+      showConfirmDialog = false
+      window.location.href = `/posts/${postResult.post.shortUrl}?posted=true`
     } catch (error) {
-      console.error('Detailed error:', error)
-      if (!error.message.includes('Session expired')) {
-        alert('Failed to create post. Please try again.')
-      }
-    } finally {
-      isSubmitting = false
+      console.error('Failed to post to Bluesky:', error)
+      alert('Failed to post to Bluesky. Your post is still saved on longer.blue.')
+      window.location.href = `/posts/${postResult.post.shortUrl}`
     }
+  }
+
+  function skipBlueskyPost() {
+    content = ''
+    showConfirmDialog = false
+    window.location.href = `/posts/${postResult.post.shortUrl}`
   }
 
   function handlePostClick() {
@@ -367,3 +386,27 @@
     </button>
   {/if}
 </div>
+
+<!-- Add confirmation dialog -->
+{#if showConfirmDialog}
+  <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="w-full max-w-md p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg">
+      <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">Post Created!</h2>
+      <p class="text-gray-600 dark:text-gray-400 mb-6">Would you like to share a preview of this post on Bluesky?</p>
+      <div class="flex gap-4">
+        <button
+          on:click={publishToBluesky}
+          class="flex-1 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+        >
+          Share on Bluesky
+        </button>
+        <button
+          on:click={skipBlueskyPost}
+          class="flex-1 px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors"
+        >
+          Skip
+        </button>
+      </div>
+    </div>
+  </div>
+{/if}
