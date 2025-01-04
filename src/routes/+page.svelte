@@ -297,9 +297,14 @@
     longer.blue
   </h1>
 
-  <p class="text-center text-gray-600 dark:text-gray-400 max-w-xl mb-8 px-4">
-    Create longer posts on Bluesky that automatically generate a preview with a link to your full content.
-  </p>
+  <div class="text-center mb-8 px-4">
+    <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-2">
+      Create longer posts for Bluesky
+    </h2>
+    <p class="text-sm text-gray-600 dark:text-gray-400 max-w-xl mx-auto">
+      Nothing gets posted to Bluesky without your explicit permission. Your content is safely saved here first, and you decide if and when to share it.
+    </p>
+  </div>
 
   <div class="w-full max-w-2xl mb-8 px-4">
     <div class="flex items-center gap-2 mb-2">
@@ -335,11 +340,11 @@
       class="px-8 py-3 mt-4 text-white bg-blue-500 rounded-xl hover:bg-blue-600 disabled:bg-blue-300 transition-all duration-200 ease-in-out hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] font-medium"
     >
       {#if isSubmitting}
-        Creating...
+        Saving...
       {:else if showValidation && !isValidLength}
         Post Too Short
       {:else}
-        Create Post
+        Save Post
       {/if}
     </button>
   </div>
