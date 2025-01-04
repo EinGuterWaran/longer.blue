@@ -23,7 +23,10 @@ export async function load({ params }) {
 
     return {
       post: {
-        ...rows[0],
+        content: rows[0].content,
+        created_at: rows[0].created_at,
+        authorDid: rows[0].author_did,
+        short_url: params.id,
         user: {
           name: userData.displayName,
           handle: userData.handle,

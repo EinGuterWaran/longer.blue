@@ -1,6 +1,7 @@
 <script>
   import { onMount } from 'svelte'
   import Footer from '../../../components/Footer.svelte'
+  import { BskyAgent } from '@atproto/api'
 
   let { data } = $props()
   let { post } = data
@@ -12,6 +13,12 @@
   let userAvatar = $state('')
   
   let decodedContent = $state('')
+  
+  let isAuthor = $state(false)
+  
+  let isEditing = $state(false)
+  let editedContent = $state('')
+  let content = $state(data.post.content)
   
   function decodeHtmlEntities(text) {
     if (typeof document === 'undefined') return text
@@ -56,6 +63,14 @@
         fetchUserProfile(userHandle)
       }
     }
+    
+    // Check if the logged-in user is the author
+    if (isLoggedIn) {
+      const userDid = localStorage.getItem('userDid')
+      console.log('Current user DID:', userDid)
+      console.log('Post author DID:', post.authorDid)
+      isAuthor = userDid === post.authorDid
+    }
   })
   
   function logout() {
@@ -68,6 +83,115 @@
   
   // Format date only if it exists
   let formattedDate = post.created_at ? new Date(post.created_at).toLocaleString() : 'Date unknown'
+  
+  async function deletePost() {
+    if (!confirm('Are you sure you want to delete this post?')) return
+    
+    try {
+      const response = await fetch(`/api/posts/${post.short_url}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('jwt')}`
+        }
+      })
+      
+      if (response.ok) {
+        window.location.href = '/'
+      }
+    } catch (error) {
+      console.error('Error deleting post:', error)
+    }
+  }
+
+  function startEdit() {
+    editedContent = content
+    isEditing = true
+  }
+
+  async function saveEdit() {
+    try {
+      const response = await fetch(`/api/posts/${data.post.short_url}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('jwt')}`
+        },
+        body: JSON.stringify({ content: editedContent })
+      })
+
+      if (response.ok) {
+        content = editedContent
+        isEditing = false
+        window.location.reload()
+      } else {
+        const error = await response.json()
+        alert(error.error || 'Failed to update post')
+      }
+    } catch (error) {
+      console.error('Error updating post:', error)
+      alert('Failed to update post')
+    }
+  }
+
+  async function shareOnBluesky() {
+    try {
+      const agent = new BskyAgent({
+        service: 'https://bsky.social'
+      })
+      
+      // Get the tokens from localStorage
+      const userDid = localStorage.getItem('userDid')
+      const accessJwt = localStorage.getItem('jwt')
+      
+      console.log('Attempting to share with DID:', userDid)
+      
+      if (!userDid || !accessJwt) {
+        throw new Error('Missing authentication credentials')
+      }
+
+      try {
+        await agent.resumeSession({
+          did: userDid,
+          accessJwt: accessJwt
+        })
+      } catch (sessionError) {
+        console.error('Session resume error:', sessionError)
+        throw new Error('Failed to authenticate with Bluesky')
+      }
+
+      const postUrl = `https://longer.blue/posts/${post.short_url}`
+      const previewText = content.slice(0, 100) + '...'
+      const postText = `${previewText}\n\nRead more: ${postUrl}`
+
+      console.log('Attempting to post:', postText)
+
+      await agent.post({
+        text: postText,
+        langs: ['en'],
+        facets: [{
+          index: {
+            byteStart: postText.indexOf(postUrl),
+            byteEnd: postText.indexOf(postUrl) + postUrl.length
+          },
+          features: [{
+            $type: 'app.bsky.richtext.facet#link',
+            uri: postUrl
+          }]
+        }]
+      })
+
+      alert('Successfully shared on Bluesky!')
+    } catch (error) {
+      console.error('Detailed sharing error:', error)
+      
+      if (error.message?.includes('ExpiredToken') || error.message?.includes('authentication')) {
+        alert('Your session has expired. Please log in again.')
+        logout()
+      } else {
+        alert(`Failed to share on Bluesky: ${error.message}`)
+      }
+    }
+  }
 </script>
 
 {#if justPosted}
@@ -137,9 +261,54 @@
         </div>
       </div>
       
-      <p class="text-gray-700 dark:text-gray-100 whitespace-pre-wrap mb-4 break-words">
-        {decodedContent}
-      </p>
+      {#if isEditing}
+        <div class="mt-6">
+          <textarea
+            bind:value={editedContent}
+            class="w-full h-48 p-4 text-gray-700 dark:text-gray-100 bg-white dark:bg-gray-800 border-2 border-blue-200 dark:border-blue-800 rounded-xl focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 transition-all shadow-sm hover:shadow-md"
+          />
+          <div class="flex gap-3 mt-4">
+            <button
+              on:click={saveEdit}
+              class="px-4 py-2 text-white bg-green-500 rounded-lg hover:bg-green-600 transition-colors"
+            >
+              Save
+            </button>
+            <button
+              on:click={() => isEditing = false}
+              class="px-4 py-2 text-white bg-gray-500 rounded-lg hover:bg-gray-600 transition-colors"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      {:else}
+        <div class="prose dark:prose-invert max-w-none overflow-hidden">
+          <p class="whitespace-pre-wrap break-words overflow-wrap-anywhere">{content}</p>
+        </div>
+        {#if isAuthor}
+          <div class="mt-6 flex flex-wrap gap-3">
+            <button
+              on:click={deletePost}
+              class="px-4 py-2 text-white bg-red-500 rounded-lg hover:bg-red-600 transition-colors"
+            >
+              Delete Post
+            </button>
+            <button
+              on:click={startEdit}
+              class="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors"
+            >
+              Edit
+            </button>
+            <button
+              on:click={shareOnBluesky}
+              class="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors"
+            >
+              Share on Bluesky
+            </button>
+          </div>
+        {/if}
+      {/if}
     </div>
   </div>
   <Footer />
@@ -154,5 +323,10 @@
 
   .animate-fade-out {
     animation: fadeOut 4s ease-in-out forwards;
+  }
+
+  :global(.overflow-wrap-anywhere) {
+    overflow-wrap: anywhere;
+    word-break: break-word;
   }
 </style> 
