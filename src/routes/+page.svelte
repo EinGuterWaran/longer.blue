@@ -309,6 +309,9 @@
 
   <div class="w-full max-w-2xl mb-8 px-4">
     <div class="flex items-center gap-2 mb-2">
+      <span class="text-sm font-medium text-gray-900 dark:text-gray-300 me-3">
+        Single post
+      </span>
       <label class="relative inline-flex items-center cursor-pointer">
         <input 
           type="checkbox" 
@@ -317,9 +320,18 @@
         >
         <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
         <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">
-          Post as thread
+          Thread mode
         </span>
       </label>
+      <div class="group relative">
+        <button class="text-gray-400 hover:text-gray-600">ⓘ</button>
+        <div class="absolute bottom-full mb-2 p-2 bg-white dark:bg-gray-800 rounded shadow-lg hidden group-hover:block w-64">
+          <p class="text-sm text-gray-600 dark:text-gray-400">
+            Thread mode will split your post into multiple connected tweets (~300 chars each).
+            Single post mode will create one post with a preview and link.
+          </p>
+        </div>
+      </div>
     </div>
     <div class="relative group">
       <textarea
