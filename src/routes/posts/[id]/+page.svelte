@@ -2,6 +2,14 @@
   import { onMount } from 'svelte'
   import Footer from '../../../components/Footer.svelte'
   import { BskyAgent } from '@atproto/api'
+  import { 
+    LogOut, 
+    LogIn, 
+    PlusCircle, 
+    Edit2, 
+    Share2, 
+    Trash2 
+  } from 'lucide-svelte'
 
   let { data } = $props()
   let { post } = data
@@ -202,33 +210,44 @@
 
 <header class="fixed top-0 left-0 right-0 bg-white dark:bg-gray-800 shadow-md z-50">
   <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-    <a href="/" class="hover:opacity-80 transition-opacity">
-      <h1 class="bg-gradient-to-r from-blue-600 via-blue-400 to-blue-500 bg-clip-text text-3xl font-bold tracking-tight text-transparent">
-        longer.blue
-      </h1>
-    </a>
+    <div class="flex items-center">
+      <a href="/" class="hover:opacity-80 transition-opacity">
+        <h1 class="bg-gradient-to-r from-blue-600 via-blue-400 to-blue-500 bg-clip-text text-3xl font-bold tracking-tight text-transparent">
+          longer.blue
+        </h1>
+      </a>
+    </div>
     
     <div class="flex items-center gap-4">
       {#if isLoggedIn}
+        <a
+          href="/"
+          class="px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors flex items-center gap-2"
+        >
+          <PlusCircle size={18} />
+          New Post
+        </a>
         <div class="flex items-center gap-2">
+          <span class="text-gray-700 dark:text-gray-300">{userHandle}</span>
           <img
             src={userAvatar || `https://ui-avatars.com/api/?name=${userHandle}`}
             alt="Profile"
             class="w-8 h-8 rounded-full"
           />
-          <span class="text-gray-700 dark:text-gray-300">{userHandle}</span>
         </div>
         <button
           on:click={logout}
-          class="px-3 py-1 text-sm text-white bg-red-500 rounded-lg hover:bg-red-600 transition-colors"
+          class="px-4 py-2 text-sm text-white bg-red-500 rounded-lg hover:bg-red-600 transition-colors ml-4 flex items-center gap-2"
         >
+          <LogOut size={18} />
           Logout
         </button>
       {:else}
         <button
           on:click={() => showLoginModal = true}
-          class="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors"
+          class="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-2"
         >
+          <LogIn size={18} />
           Login
         </button>
       {/if}
@@ -289,22 +308,25 @@
         {#if isAuthor}
           <div class="mt-6 flex flex-wrap gap-3">
             <button
-              on:click={deletePost}
-              class="px-4 py-2 text-white bg-red-500 rounded-lg hover:bg-red-600 transition-colors"
-            >
-              Delete Post
-            </button>
-            <button
               on:click={startEdit}
-              class="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors"
+              class="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-2"
             >
+              <Edit2 size={18} />
               Edit
             </button>
             <button
               on:click={shareOnBluesky}
-              class="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors"
+              class="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-2"
             >
+              <Share2 size={18} />
               Share on Bluesky
+            </button>
+            <button
+              on:click={deletePost}
+              class="px-4 py-2 text-white bg-red-500 rounded-lg hover:bg-red-600 transition-colors ml-auto flex items-center gap-2"
+            >
+              <Trash2 size={18} />
+              Delete Post
             </button>
           </div>
         {/if}

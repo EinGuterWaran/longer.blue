@@ -2,6 +2,7 @@
   import { onMount } from 'svelte'
   import { BskyAgent } from '@atproto/api'
   import Footer from '../components/Footer.svelte'
+  import { LogOut } from 'lucide-svelte'
   
   let content = $state('')
   let isSubmitting = $state(false)
@@ -404,8 +405,9 @@
       </div>
       <button
         on:click={logout}
-        class="px-3 py-1 text-sm text-white bg-red-500 rounded-lg hover:bg-red-600 transition-colors"
+        class="px-4 py-2 text-sm text-white bg-red-500 rounded-lg hover:bg-red-600 transition-colors ml-4 flex items-center gap-2"
       >
+        <LogOut size={18} />
         Logout
       </button>
     </div>
