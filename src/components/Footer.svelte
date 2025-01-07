@@ -8,21 +8,21 @@
       </div>
       
       <div class="flex flex-col items-center gap-3 text-center">
-        <a href="https://boilerplatehub.com" 
+        <a href="https://boilerplatehub.com?utm_source=longer.blue" 
            class="text-sm text-blue-600/80 dark:text-blue-400/80 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
            target="_blank" 
            rel="noopener noreferrer"
         >
           Need a SaaS starter kit? Check out BoilerplateHub →
         </a>
-        <a href="https://feather-flow.com" 
+        <a href="https://feather-flow.com?utm_source=longer.blue" 
            class="text-sm text-blue-600/80 dark:text-blue-400/80 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
            target="_blank" 
            rel="noopener noreferrer"
         >
           Get your MVP built in 21 days with FeatherFlow →
         </a>
-        <a href="https://blueskymeter.com" 
+        <a href="https://blueskymeter.com?utm_source=longer.blue" 
            class="text-sm text-blue-600/80 dark:text-blue-400/80 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
            target="_blank" 
            rel="noopener noreferrer"
