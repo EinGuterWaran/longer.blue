@@ -22,6 +22,13 @@
         >
           Get your MVP built in 21 days with FeatherFlow →
         </a>
+        <a href="https://blueskymeter.com" 
+           class="text-sm text-blue-600/80 dark:text-blue-400/80 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+           target="_blank" 
+           rel="noopener noreferrer"
+        >
+          Track your Bluesky analytics with BlueskyMeter →
+        </a>
       </div>
       
       <div class="flex flex-wrap justify-center gap-4">
