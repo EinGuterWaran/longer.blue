@@ -29,11 +29,14 @@
   let content = $state(data.post.content)
   
   function decodeHtmlEntities(text) {
-    if (typeof document === 'undefined') return text
-    const textarea = document.createElement('textarea')
-    textarea.innerHTML = text
-    return textarea.value
-  }
+  if (typeof document === 'undefined') return text
+  const parser = new DOMParser()
+  const dom = parser.parseFromString(
+    `<!doctype html><body>${text}`, 
+    'text/html'
+  )
+  return dom.body.textContent
+}
   
   async function fetchUserProfile(handle) {
     try {
