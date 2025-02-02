@@ -69,8 +69,14 @@
   // Computed value for validation
   let isValidLength = $derived(characterCount >= 300 && characterCount <= 10000)
 
+  function decodeHTMLEntities(text) {
+    const textarea = document.createElement('textarea')
+    textarea.innerHTML = text
+    return textarea.value
+  }
+
   function handleInput(event) {
-    content = event.target.value
+    content = decodeHTMLEntities(event.target.value)
     characterCount = content.trim().length
     if (!hasInteracted && content.length > 0) {
       hasInteracted = true
@@ -116,7 +122,9 @@
     
     isSubmitting = true
     try {
-      // Create post in database
+      // Decode HTML entities before sending to API
+      const decodedContent = decodeHTMLEntities(content)
+      
       const response = await fetch('/api/posts', {
         method: 'POST',
         headers: {
@@ -124,7 +132,7 @@
           'Authorization': `Bearer ${jwt}`
         },
         body: JSON.stringify({ 
-          content,
+          content: decodedContent,
           authorDid: userDid
         }),
       })

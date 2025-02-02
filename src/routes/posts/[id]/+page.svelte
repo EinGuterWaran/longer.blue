@@ -30,9 +30,11 @@
   
   function decodeHtmlEntities(text) {
     if (typeof document === 'undefined') return text
-    const textarea = document.createElement('textarea')
-    textarea.innerHTML = text
-    return textarea.value
+    const parser = new DOMParser()
+    const dom = parser.parseFromString(
+      `<!doctype html><body>${text}`, 'text/html'
+    )
+    return dom.body.textContent
   }
   
   async function fetchUserProfile(handle) {
@@ -48,7 +50,8 @@
   }
   
   onMount(() => {
-    decodedContent = post?.content ? decodeHtmlEntities(post.content) : 'No content available'
+    content = post?.content ? decodeHtmlEntities(post.content) : 'No content available'
+    decodedContent = content
     
     const searchParams = new URLSearchParams(window.location.search)
     justPosted = searchParams.get('posted') === 'true'
