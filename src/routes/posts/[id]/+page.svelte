@@ -29,13 +29,9 @@
   let content = $state(data.post.content)
   
   function decodeHtmlEntities(text) {
-  if (typeof document === 'undefined') return text
-  const parser = new DOMParser()
-  const dom = parser.parseFromString(
-    `<!doctype html><body>${text}`, 
-    'text/html'
-  )
-  return dom.body.textContent
+  const element = document.createElement('div');
+  element.innerHTML = text;
+  return element.textContent || element.innerText;
 }
   
   async function fetchUserProfile(handle) {
