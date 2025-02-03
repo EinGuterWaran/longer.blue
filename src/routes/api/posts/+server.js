@@ -12,7 +12,7 @@ const requestLog = new Map()
 
 // Content validation
 const MAX_CONTENT_LENGTH = 10000 // Maximum characters allowed
-const MIN_CONTENT_LENGTH = 300   // Minimum characters required
+const MIN_CONTENT_LENGTH = 1   // Minimum characters required
 
 function sanitizeInput(content) {
   content = content.replace(/\0/g, '')
