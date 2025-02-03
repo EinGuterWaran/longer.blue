@@ -67,7 +67,7 @@
   }
 
   // Computed value for validation
-  let isValidLength = $derived(characterCount >= 300 && characterCount <= 10000)
+  let isValidLength = $derived(characterCount <= 10000)
 
   function decodeHTMLEntities(text) {
     const textarea = document.createElement('textarea')
@@ -346,24 +346,24 @@
         value={content}
         on:input={handleInput}
         class="w-full h-48 p-4 text-gray-700 dark:text-gray-100 bg-white dark:bg-gray-800 border-2 {showValidation ? (isValidLength ? 'border-blue-200 dark:border-blue-800' : 'border-red-200 dark:border-red-800') : 'border-gray-200 dark:border-gray-700'} rounded-xl focus:outline-none focus:border-blue-500 dark:focus:border-blue-400 transition-all shadow-sm hover:shadow-md"
-        placeholder="Write your longer post here... (minimum 300 characters)"
+        placeholder="Write your longer post here..."
       />
       <div class="absolute inset-0 rounded-xl bg-blue-500/5 pointer-events-none transition-opacity opacity-0 group-hover:opacity-100" />
     </div>
     
     <div class="mt-2 text-sm {showValidation ? (isValidLength ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400') : 'text-gray-500 dark:text-gray-400'}">
-      {characterCount} characters {showValidation ? (isValidLength ? '✓' : `(at least ${300 - characterCount} more needed)`) : '(minimum 300)'}
+      {characterCount} characters {showValidation ? (isValidLength ? '✓' : 'Maximum 10,000 characters') : ''}
     </div>
     
     <button
       on:click={handlePostClick}
-      disabled={!isValidLength}
+      disabled={!isValidLength || !content.trim()}
       class="px-8 py-3 mt-4 text-white bg-blue-500 rounded-xl hover:bg-blue-600 disabled:bg-blue-300 transition-all duration-200 ease-in-out hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] font-medium"
     >
       {#if isSubmitting}
         Saving...
       {:else if showValidation && !isValidLength}
-        Post Too Short
+        Post Too Long
       {:else}
         Save Post
       {/if}
