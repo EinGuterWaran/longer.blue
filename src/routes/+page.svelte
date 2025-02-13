@@ -338,6 +338,12 @@
 <div class="fixed top-4 right-4">
   {#if isLoggedIn}
     <div class="flex items-center gap-4">
+      <a
+        href="/my/posts"
+        class="px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors flex items-center gap-2"
+      >
+        My Posts
+      </a>
       <div class="flex items-center gap-2">
         <img
           src={userAvatar || `https://ui-avatars.com/api/?name=${userHandle}`}
