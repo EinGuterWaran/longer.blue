@@ -2,7 +2,7 @@
   import { onMount } from 'svelte'
   import { BskyAgent } from '@atproto/api'
   import Footer from '../components/Footer.svelte'
-  import { LogOut } from 'lucide-svelte'
+  import { LogOut, LogIn } from 'lucide-svelte'
   
   let content = $state('')
   let isSubmitting = $state(false)
@@ -26,6 +26,8 @@
   // Add new state variables
   let showConfirmDialog = $state(false)
   let postResult = $state(null)
+
+  let isLoggingIn = $state(false)
 
   async function fetchUserProfile(handle) {
     try {
@@ -229,12 +231,7 @@
   }
 
   async function handleLogin() {
-    const loginButton = document.activeElement;
-    if (loginButton) {
-      loginButton.textContent = 'Logging in...';
-      loginButton.disabled = true;
-    }
-
+    isLoggingIn = true
     try {
       await login();
       if (isLoggedIn) {
@@ -246,10 +243,7 @@
         }
       }
     } finally {
-      if (loginButton) {
-        loginButton.textContent = 'Login';
-        loginButton.disabled = false;
-      }
+      isLoggingIn = false;
     }
   }
 </script>
@@ -321,19 +315,20 @@
         type="text"
         bind:value={identifier}
         placeholder="Username or email"
-        class="w-full mb-3 p-2 border rounded"
+        class="w-full mb-3 p-2 border rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 border-gray-300 dark:border-gray-600"
       />
       <input
         type="password"
         bind:value={password}
         placeholder="Password"
-        class="w-full mb-4 p-2 border rounded"
+        class="w-full mb-4 p-2 border rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 border-gray-300 dark:border-gray-600"
       />
       <button
         on:click={handleLogin}
+        disabled={isLoggingIn}
         class="w-full px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-blue-400 disabled:cursor-not-allowed transition-colors"
       >
-        Login
+        {isLoggingIn ? 'Logging in...' : 'Login'}
       </button>
     </div>
   </div>
@@ -362,8 +357,9 @@
   {:else}
     <button
       on:click={() => showLoginModal = true}
-      class="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors"
+      class="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-2"
     >
+      <LogIn size={18} />
       Login
     </button>
   {/if}

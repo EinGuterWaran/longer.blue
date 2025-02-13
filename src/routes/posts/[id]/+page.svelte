@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import { onMount } from 'svelte'
   import Footer from '../../../components/Footer.svelte'
   import { BskyAgent } from '@atproto/api'
@@ -28,6 +28,11 @@
   let editedContent = $state('')
   let content = $state(data.post.content)
   
+  let identifier = $state('')
+  let password = $state('')
+  let loginError = $state('')
+  let isLoggingIn = $state(false)
+
   function decodeHtmlEntities(text) {
     if (typeof document === 'undefined') return text
     const parser = new DOMParser()
@@ -203,6 +208,47 @@
       }
     }
   }
+
+  async function handleLogin() {
+    isLoggingIn = true
+    try {
+      const response = await fetch('/api/auth/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ identifier, password })
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Login failed')
+      }
+
+      // Store auth data
+      localStorage.setItem('jwt', data.accessJwt)
+      localStorage.setItem('userDid', data.did)
+      localStorage.setItem('userHandle', data.handle)
+
+      // Update state
+      isLoggedIn = true
+      userHandle = data.handle
+      showLoginModal = false
+      identifier = ''
+      password = ''
+      loginError = ''
+
+      // Fetch user profile for avatar
+      if (data.handle) {
+        fetchUserProfile(data.handle)
+      }
+    } catch (error: any) {
+      loginError = error.message || 'Login failed'
+    } finally {
+      isLoggingIn = false
+    }
+  }
 </script>
 
 {#if justPosted}
@@ -335,9 +381,64 @@
         {/if}
       {/if}
     </div>
+
+    <!-- New CTA Section -->
+    <div class="mt-8 bg-blue-50 dark:bg-blue-900/50 rounded-xl p-6 shadow-lg text-center">
+      <h2 class="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-3">
+        Want to write longer posts on Bluesky?
+      </h2>
+      <p class="text-gray-700 dark:text-gray-300 mb-4">
+        Create your own extended posts and share them seamlessly on Bluesky.
+      </p>
+      <a
+        href="/"
+        class="inline-flex items-center gap-2 px-6 py-3 text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors"
+      >
+        <PlusCircle size={20} />
+        Create Your Post
+      </a>
+    </div>
   </div>
   <Footer />
 </main> 
+
+{#if showLoginModal}
+  <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="w-full max-w-md p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Login with Bluesky</h2>
+        <button 
+          on:click={() => showLoginModal = false}
+          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+        >
+          ✕
+        </button>
+      </div>
+      {#if loginError}
+        <div class="mb-4 p-3 bg-red-100 text-red-700 rounded-lg">{loginError}</div>
+      {/if}
+      <input
+        type="text"
+        bind:value={identifier}
+        placeholder="Username or email"
+        class="w-full mb-3 p-2 border rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 border-gray-300 dark:border-gray-600"
+      />
+      <input
+        type="password"
+        bind:value={password}
+        placeholder="Password"
+        class="w-full mb-4 p-2 border rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 border-gray-300 dark:border-gray-600"
+      />
+      <button
+        on:click={handleLogin}
+        disabled={isLoggingIn}
+        class="w-full px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-blue-400 disabled:cursor-not-allowed transition-colors"
+      >
+        {isLoggingIn ? 'Logging in...' : 'Login'}
+      </button>
+    </div>
+  </div>
+{/if}
 
 <style>
   @keyframes fadeOut {
