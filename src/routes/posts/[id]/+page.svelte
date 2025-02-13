@@ -261,29 +261,41 @@
   <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
     <div class="flex items-center">
       <a href="/" class="hover:opacity-80 transition-opacity">
-        <h1 class="bg-gradient-to-r from-blue-600 via-blue-400 to-blue-500 bg-clip-text text-3xl font-bold tracking-tight text-transparent">
+        <h1 class="bg-gradient-to-r from-blue-600 via-blue-400 to-blue-500 bg-clip-text text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-transparent">
           longer.blue
         </h1>
       </a>
     </div>
     
-    <div class="flex items-center gap-4">
+    <div class="flex items-center gap-2 sm:gap-4">
       {#if isLoggedIn}
         <a
           href="/my/posts"
-          class="px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors flex items-center gap-2"
+          class="hidden sm:flex px-2 sm:px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors items-center gap-2"
         >
           My Posts
         </a>
         <a
+          href="/my/posts"
+          class="sm:hidden px-2 py-2 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
+        >
+          <span class="text-sm">Posts</span>
+        </a>
+        <a
           href="/"
-          class="px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors flex items-center gap-2"
+          class="hidden sm:flex px-2 sm:px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors items-center gap-2"
         >
           <PlusCircle size={18} />
-          New Post
+          <span class="hidden sm:inline">New Post</span>
+        </a>
+        <a
+          href="/"
+          class="sm:hidden px-2 py-2 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
+        >
+          <PlusCircle size={18} />
         </a>
         <div class="flex items-center gap-2">
-          <span class="text-gray-700 dark:text-gray-300">{userHandle}</span>
+          <span class="hidden sm:inline text-gray-700 dark:text-gray-300">{userHandle}</span>
           <img
             src={userAvatar || `https://ui-avatars.com/api/?name=${userHandle}`}
             alt="Profile"
@@ -292,18 +304,18 @@
         </div>
         <button
           on:click={logout}
-          class="px-4 py-2 text-sm text-white bg-red-500 rounded-lg hover:bg-red-600 transition-colors ml-4 flex items-center gap-2"
+          class="px-2 sm:px-4 py-2 text-sm text-white bg-red-500 rounded-lg hover:bg-red-600 transition-colors flex items-center gap-2"
         >
           <LogOut size={18} />
-          Logout
+          <span class="hidden sm:inline">Logout</span>
         </button>
       {:else}
         <button
           on:click={() => showLoginModal = true}
-          class="px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-2"
+          class="px-2 sm:px-4 py-2 text-sm text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-2"
         >
           <LogIn size={18} />
-          Login
+          <span class="hidden sm:inline">Login</span>
         </button>
       {/if}
     </div>
