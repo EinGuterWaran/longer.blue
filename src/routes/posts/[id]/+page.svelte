@@ -347,6 +347,27 @@
         </div>
       </div>
       
+      <!-- Post URL section -->
+      {#if isAuthor}
+        <div class="flex items-center gap-2 mb-6 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+          <input
+            type="text"
+            readonly
+            value={`https://longer.blue/posts/${post.short_url}`}
+            class="flex-1 bg-transparent text-gray-600 dark:text-gray-300 text-sm font-mono truncate"
+          />
+          <button
+            on:click={() => {
+              navigator.clipboard.writeText(`https://longer.blue/posts/${post.short_url}`);
+              alert('URL copied to clipboard!');
+            }}
+            class="px-3 py-1 text-sm text-white bg-blue-500 rounded hover:bg-blue-600 transition-colors"
+          >
+            Copy
+          </button>
+        </div>
+      {/if}
+      
       {#if isEditing}
         <div class="mt-6">
           <textarea
