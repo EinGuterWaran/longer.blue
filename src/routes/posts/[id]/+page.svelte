@@ -42,6 +42,15 @@
     return dom.body.textContent
   }
   
+  function convertUrlsToLinks(text: string): string {
+    if (!text) return ''
+    // URL regex pattern
+    const urlPattern = /(https?:\/\/[^\s]+)/g
+    return text.replace(urlPattern, (url) => {
+      return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 hover:underline">${url}</a>`
+    })
+  }
+  
   async function fetchUserProfile(handle) {
     try {
       const response = await fetch(`https://api.bsky.app/xrpc/app.bsky.actor.getProfile?actor=${handle}`)
@@ -391,7 +400,7 @@
         </div>
       {:else}
         <div class="prose dark:prose-invert max-w-none overflow-hidden">
-          <p class="whitespace-pre-wrap break-words overflow-wrap-anywhere">{content}</p>
+          <p class="whitespace-pre-wrap break-words overflow-wrap-anywhere">{@html convertUrlsToLinks(content)}</p>
         </div>
         {#if isAuthor}
           <div class="mt-6 flex flex-wrap gap-3">
