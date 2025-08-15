@@ -15,7 +15,7 @@
         >
           Need a SaaS starter kit? Check out BoilerplateHub →
         </a>
-        <a href="https://feather-flow.com?utm_source=longer.blue" 
+        <a href="https://featherflow.com?utm_source=longer.blue" 
            class="text-sm text-blue-600/80 dark:text-blue-400/80 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
            target="_blank" 
            rel="noopener noreferrer"
