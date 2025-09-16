@@ -29,6 +29,13 @@
         >
           Track your Bluesky analytics with BlueskyMeter →
         </a>
+        <a href="https://www.effortlessbacklinks.com?utm_source=longer.blue" 
+           class="text-sm text-blue-600/80 dark:text-blue-400/80 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+           target="_blank" 
+           rel="noopener noreferrer"
+        >
+        Rank higher and get more organic traffic in 30 days with Effortless Backlinks →
+        </a>
       </div>
       
       <div class="flex flex-wrap justify-center gap-4">
